@@ -9,6 +9,7 @@ public class PointCloud implements Serializable
     float x;
     float y;
     float z;
+    private long distance;
 
     public long getMortoncode()
     {
@@ -68,5 +69,15 @@ public class PointCloud implements Serializable
     public void setRegionid(int regionid)
     {
         this.regionid = regionid;
+    }
+
+    public long getDistance()
+    {
+        return distance;
+    }
+
+    public void setDistance(long distance)
+    {
+        this.distance = distance;
     }
 }

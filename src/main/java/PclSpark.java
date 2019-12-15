@@ -94,6 +94,8 @@ public class PclSpark
          */
 
         SparkCassandra cassandraSpark = new SparkCassandra();
-        cassandraSpark.Process();
+        //
+        //cassandraSpark.Process();
+        SparkCassandra.ProcessKNN();
     }
 }
