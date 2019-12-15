@@ -218,7 +218,6 @@ public class SparkCassandra
                     int firstKCount = 1;
                     int windowKCount = 1;
                     int windowStartIndex = 0;
-
                     while (pointCloudIterator.hasNext())
                     {
                         PointCloud pointCloud = pointCloudIterator.next();
@@ -230,36 +229,36 @@ public class SparkCassandra
                             .getZ() - pointCloud.getZ());
                         Long distance = (long) Math.sqrt(xdiff + ydiff + zdiff);
                         pointCloud.setDistance(distance);
-                        pointCloudResult.add(pointCloud);
 
-                        if (firstKCount <= k)
+                        // Left Side Partition
+                        if (inputPointCloud.getMortoncode() > pointCloud.getMortoncode())
                         {
-                            pointCloudResult.add(pointCloud);
-                            firstKCount++;
-                        }
-
-                        if (firstKCount > k && windowCount <= k)
-                        {
-                            if(windowKCount == k)
+                            if (firstKCount <= k)
                             {
-                                windowStartIndex = k;
+                                pointCloudResult.add(pointCloud);
+                                firstKCount++;
                             }
 
-                            pointCloudResult.add(pointCloud);
-                            windowKCount++;
-                        }
-
-                        if (firstKCount > k && windowKCount > k)
-                        {
-                            if (windowStartIndex = 2k - 1)
+                            if (firstKCount > k)
                             {
-                                windowStartIndex = k;
+                                if (windowStartIndex == k)
+                                {
+                                    windowStartIndex = 0;
+                                }
+                                pointCloudResult.set(windowStartIndex, pointCloud);
+                                windowStartIndex++;
                             }
-
-                            pointCloudResult.
                         }
 
-                        pointCloudResult.
+                        //Right Side Partitions
+                        if (inputPointCloud.getMortoncode() <= pointCloud.getMortoncode())
+                        {
+                            if (windowKCount <= k)
+                            {
+                                pointCloudResult.add(pointCloud);
+                                windowKCount++;
+                            }
+                        }
                     }
                     return pointCloudResult.iterator();
                 }
@@ -431,28 +430,24 @@ public class SparkCassandra
         sortedRDD.persist(StorageLevel.MEMORY_AND_DISK());
 
         /*
-        sortedRDD.foreach(new VoidFunction<PointCloud>()
-        {
-            @Override
-            public void call(PointCloud pointCloud) throws Exception
-            {
-                SparkCassandra.PP(sortedRDD, pointCloud);
-            }
-        });
-         */
-
         PointCloud pp = inputPointCloud.get(3000);
-        System.out.println(pp.getPointid());
         for (int i = 2990; i < 3011; i++)
         {
             System.out.println(inputPointCloud.get(i).getPointid());
             System.out.println(inputPointCloud.get(i).getMortoncode());
         }
+        */
+
         /*
         for (PointCloud pointcloudinput : inputPointCloud)
         {
             SparkCassandra.PP(sortedRDD, pointcloudinput);
-        }*/
+        }
+        */
+
+        PointCloud inputPoint = inputPointCloud.get(3000);
+        System.out.println(inputPoint.getPointid());
+        SparkCassandra.PerformKNN(sortedRDD, inputPoint);
 
         System.out.println("DONE PROCESSING");
     }
