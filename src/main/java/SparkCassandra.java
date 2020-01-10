@@ -164,10 +164,10 @@ public class SparkCassandra
 
         JavaRDD<PointCloud> finalKNNPoints = candidatePointCloud
             .sortBy(
-                new Function<PointCloud, Long>()
+                new Function<PointCloud, Double>()
                 {
                     @Override
-                    public Long call(PointCloud v1) throws Exception
+                    public Double call(PointCloud v1) throws Exception
                     {
                         return v1.getDistance();
                     }
@@ -227,7 +227,7 @@ public class SparkCassandra
                             .getY() - pointCloud.getY());
                         float zdiff = (inputPointCloud.getZ() - pointCloud.getZ()) * (inputPointCloud
                             .getZ() - pointCloud.getZ());
-                        Long distance = (long) Math.sqrt(xdiff + ydiff + zdiff);
+                        double distance = Math.sqrt(xdiff + ydiff + zdiff);
                         pointCloud.setDistance(distance);
 
                         // Left Side Partition
@@ -266,15 +266,15 @@ public class SparkCassandra
 
         JavaRDD<PointCloud> finalKNNPoints = candidatePointCloud
             .sortBy(
-                new Function<PointCloud, Long>()
+                new Function<PointCloud, Double>()
                 {
                     @Override
-                    public Long call(PointCloud v1) throws Exception
+                    public Double call(PointCloud v1) throws Exception
                     {
                         return v1.getDistance();
                     }
                 },
-                false,
+                true,
                 1
             );
        /*
@@ -285,17 +285,23 @@ public class SparkCassandra
                         mapToRow(PointCloud.class)
                 ).saveToCassandra();
         */
-        System.out.println(inputPointCloud.getPointid());
+
         /*
+        System.out.println(inputPointCloud.getPointid());
+
         System.out.println(inputPointCloud.getX());
         System.out.println(inputPointCloud.getY());
         System.out.println(inputPointCloud.getZ());
         System.out.println("*********************");
         */
+
         List<PointCloud> pointCloudsExisting = finalKNNPoints.collect();
         for (PointCloud point : pointCloudsExisting)
         {
             System.out.print(point.getPointid());
+            System.out.print(" ");
+            System.out.println(point.getDistance());
+            /*
             System.out.print(" ");
             System.out.print(point.getX());
             System.out.print(" ");
@@ -303,7 +309,9 @@ public class SparkCassandra
             System.out.print(" ");
             System.out.print(point.getZ());
             System.out.println("");
+            */
         }
+        System.out.println("DONE FIRST");
     }
 
     public static void ProcessRadius()
@@ -426,7 +434,7 @@ public class SparkCassandra
                 2
             );
 
-        List<PointCloud> inputPointCloud = sortedRDD.collect();
+        //List<PointCloud> inputPointCloud = sortedRDD.collect();
         sortedRDD.persist(StorageLevel.MEMORY_AND_DISK());
 
         /*
@@ -445,6 +453,22 @@ public class SparkCassandra
         }
         */
 
+        /*
+        sortedRDD.foreachPartition(new VoidFunction<Iterator<PointCloud>>()
+        {
+            @Override
+            public void call(Iterator<PointCloud> pointCloudIterator) throws Exception
+            {
+                while(pointCloudIterator.hasNext())
+                {
+                    PointCloud p = pointCloudIterator.next();
+                    SparkCassandra.PerformKNN(sortedRDD, p);
+                }
+            }
+        });
+        */
+
+        List<PointCloud> inputPointCloud = pointCloudRdd.collect();
         PointCloud inputPoint = inputPointCloud.get(3000);
         System.out.println(inputPoint.getPointid());
         SparkCassandra.PerformKNN(sortedRDD, inputPoint);
