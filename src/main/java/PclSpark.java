@@ -18,7 +18,9 @@ public class PclSpark
     {
         SparkCassandra cassandraSpark = new SparkCassandra();
         //cassandraSpark.BuildDataOutputInCassandra();
-        cassandraSpark.ProcessKNNNormalized();
+        //cassandraSpark.BuildDataOutputVehingenInCassandra();
+        cassandraSpark.ProcessKNNNormalizedvh();
+        //cassandraSpark.ProcessKNNNormalized();
         //cassandraSpark.BuildDataInCassandra();
         //SparkCassandra.ProcessKNN();
     }
