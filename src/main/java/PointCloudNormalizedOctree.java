@@ -1,20 +1,23 @@
 import java.io.Serializable;
 
-public class PointCloudNormalized implements Serializable
+public class PointCloudNormalizedOctree implements Serializable
 {
-    private int regionid;
+    private String regionid;
     private long mortoncode;
     private long pointid;
     private long x;
     private long y;
     private long z;
+    private float xo;
+    private float yo;
+    private float zo;
 
-    public int getRegionid()
+    public String getRegionid()
     {
         return regionid;
     }
 
-    public void setRegionid(int regionIid)
+    public void setRegionid(String regionIid)
     {
         this.regionid = regionIid;
     }
@@ -80,4 +83,28 @@ public class PointCloudNormalized implements Serializable
     }
 
     private double distance;
+
+    public float getXo() {
+        return xo;
+    }
+
+    public void setXo(float xo) {
+        this.xo = xo;
+    }
+
+    public float getYo() {
+        return yo;
+    }
+
+    public void setYo(float yo) {
+        this.yo = yo;
+    }
+
+    public float getZo() {
+        return zo;
+    }
+
+    public void setZo(float zo) {
+        this.zo = zo;
+    }
 }
