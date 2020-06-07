@@ -6,6 +6,7 @@ public class PointCloudRegions implements Serializable
     private long pointid;
     private long morton;
     private int label;
+    private int isboundary;
     private long x;
     private long y;
     private long z;
@@ -91,5 +92,13 @@ public class PointCloudRegions implements Serializable
 
     public void setLabel(int label) {
         this.label = label;
+    }
+
+    public int getIsboundary() {
+        return isboundary;
+    }
+
+    public void setIsboundary(int isboundary) {
+        this.isboundary = isboundary;
     }
 }

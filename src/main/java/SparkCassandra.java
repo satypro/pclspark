@@ -217,8 +217,8 @@ public class SparkCassandra
                             PointCloudRegions pointCloud = new PointCloudRegions();
 
                             long x = Long.parseLong(cord[2]);
-                            long delta_x = 2000L;
-                            if (x <= (95093 + delta_x))
+                            long delta_x = 1000L;
+                            if (x <= (95000 + delta_x))
                             {
                                 long pointId = Long.parseLong(cord[0]);;
                                 long morton = Long.parseLong(cord[1]);
@@ -228,6 +228,15 @@ public class SparkCassandra
                                 float yo = Float.parseFloat(cord[6]);
                                 float zo = Float.parseFloat(cord[7]);
                                 int label = Integer.parseInt(cord[9]);
+
+                                if (x > 95000)
+                                {
+                                    pointCloud.setIsboundary(1);
+                                }
+                                else
+                                {
+                                    pointCloud.setIsboundary(0);
+                                }
 
                                 pointCloud.setMorton(morton);
                                 pointCloud.setRegionid( 1L);
@@ -270,8 +279,8 @@ public class SparkCassandra
                             PointCloudRegions pointCloud = new PointCloudRegions();
 
                             long x = Long.parseLong(cord[2]);
-                            long delta_x = 2000L;
-                            if (x >= (95903 - delta_x) &&  x <= (103000 + delta_x))
+                            long delta_x = 1000L;
+                            if (x >= (95000 - delta_x) &&  x <= (99000 + delta_x))
                             {
                                 long pointId = Long.parseLong(cord[0]);;
                                 long y = Long.parseLong(cord[3]);
@@ -281,6 +290,15 @@ public class SparkCassandra
                                 float zo = Float.parseFloat(cord[7]);
                                 long morton = Long.parseLong(cord[1]);
                                 int label = Integer.parseInt(cord[9]);
+
+                                if (x < 95000 || x > 99000)
+                                {
+                                    pointCloud.setIsboundary(1);
+                                }
+                                else
+                                {
+                                    pointCloud.setIsboundary(0);
+                                }
 
                                 pointCloud.setMorton(morton);
                                 pointCloud.setRegionid( 2L);
@@ -322,8 +340,8 @@ public class SparkCassandra
                             PointCloudRegions pointCloud = new PointCloudRegions();
 
                             long x = Long.parseLong(cord[2]);
-                            long delta_x = 2000L;
-                            if (x >= (103000 - delta_x) &&  x <= (225276 + delta_x))
+                            long delta_x = 1000L;
+                            if (x >= (99000 - delta_x) &&  x <= (104000 + delta_x))
                             {
                                 long pointId = Long.parseLong(cord[0]);;
                                 long y = Long.parseLong(cord[3]);
@@ -333,6 +351,15 @@ public class SparkCassandra
                                 float zo = Float.parseFloat(cord[7]);
                                 long morton = Long.parseLong(cord[1]);
                                 int label = Integer.parseInt(cord[9]);
+
+                                if (x < 99000 || x > 104000)
+                                {
+                                    pointCloud.setIsboundary(1);
+                                }
+                                else
+                                {
+                                    pointCloud.setIsboundary(0);
+                                }
 
                                 pointCloud.setMorton(morton);
                                 pointCloud.setRegionid( 3L);
@@ -353,6 +380,128 @@ public class SparkCassandra
                 });
 
         CassandraJavaUtil.javaFunctions(pointCloudsRegion3)
+                .writerBuilder(
+                        "propelld",
+                        "pointcloudregions",
+                        mapToRow(PointCloudRegions.class)
+                ).saveToCassandra();
+
+        JavaRDD<PointCloudRegions> pointCloudsRegion4 = input
+                .mapPartitions(new FlatMapFunction<Iterator<String>, PointCloudRegions>()
+                {
+                    @Override
+                    public Iterator<PointCloudRegions> call(Iterator<String> stringIterator) throws Exception
+                    {
+                        List<PointCloudRegions> pointClouds = new ArrayList<>();
+
+                        while (stringIterator.hasNext())
+                        {
+                            String in = stringIterator.next();
+                            String[] cord = in.split(" ");
+                            PointCloudRegions pointCloud = new PointCloudRegions();
+
+                            long x = Long.parseLong(cord[2]);
+                            long delta_x = 1000L;
+                            if (x >= (104000 - delta_x) &&  x <= (108000 + delta_x))
+                            {
+                                long pointId = Long.parseLong(cord[0]);;
+                                long y = Long.parseLong(cord[3]);
+                                long z = Long.parseLong(cord[4]);
+                                float xo = Float.parseFloat(cord[5]);
+                                float yo = Float.parseFloat(cord[6]);
+                                float zo = Float.parseFloat(cord[7]);
+                                long morton = Long.parseLong(cord[1]);
+                                int label = Integer.parseInt(cord[9]);
+
+                                if (x < 104000 || x > 108000)
+                                {
+                                    pointCloud.setIsboundary(1);
+                                }
+                                else
+                                {
+                                    pointCloud.setIsboundary(0);
+                                }
+
+                                pointCloud.setMorton(morton);
+                                pointCloud.setRegionid( 4L);
+                                pointCloud.setPointid(pointId);
+                                pointCloud.setX(x);
+                                pointCloud.setY(y);
+                                pointCloud.setZ(z);
+                                pointCloud.setXo(xo);
+                                pointCloud.setYo(yo);
+                                pointCloud.setZo(zo);
+                                pointCloud.setLabel(label);
+
+                                pointClouds.add(pointCloud);
+                            }
+                        }
+                        return pointClouds.iterator();
+                    }
+                });
+
+        CassandraJavaUtil.javaFunctions(pointCloudsRegion4)
+                .writerBuilder(
+                        "propelld",
+                        "pointcloudregions",
+                        mapToRow(PointCloudRegions.class)
+                ).saveToCassandra();
+
+        JavaRDD<PointCloudRegions> pointCloudsRegion5 = input
+                .mapPartitions(new FlatMapFunction<Iterator<String>, PointCloudRegions>()
+                {
+                    @Override
+                    public Iterator<PointCloudRegions> call(Iterator<String> stringIterator) throws Exception
+                    {
+                        List<PointCloudRegions> pointClouds = new ArrayList<>();
+
+                        while (stringIterator.hasNext())
+                        {
+                            String in = stringIterator.next();
+                            String[] cord = in.split(" ");
+                            PointCloudRegions pointCloud = new PointCloudRegions();
+
+                            long x = Long.parseLong(cord[2]);
+                            long delta_x = 1000L;
+                            if (x >= (108000 - delta_x) &&  x <= (300000 + delta_x))
+                            {
+                                long pointId = Long.parseLong(cord[0]);;
+                                long y = Long.parseLong(cord[3]);
+                                long z = Long.parseLong(cord[4]);
+                                float xo = Float.parseFloat(cord[5]);
+                                float yo = Float.parseFloat(cord[6]);
+                                float zo = Float.parseFloat(cord[7]);
+                                long morton = Long.parseLong(cord[1]);
+                                int label = Integer.parseInt(cord[9]);
+
+                                if (x < 108000 || x > 300000)
+                                {
+                                    pointCloud.setIsboundary(1);
+                                }
+                                else
+                                {
+                                    pointCloud.setIsboundary(0);
+                                }
+
+                                pointCloud.setMorton(morton);
+                                pointCloud.setRegionid( 4L);
+                                pointCloud.setPointid(pointId);
+                                pointCloud.setX(x);
+                                pointCloud.setY(y);
+                                pointCloud.setZ(z);
+                                pointCloud.setXo(xo);
+                                pointCloud.setYo(yo);
+                                pointCloud.setZo(zo);
+                                pointCloud.setLabel(label);
+
+                                pointClouds.add(pointCloud);
+                            }
+                        }
+                        return pointClouds.iterator();
+                    }
+                });
+
+        CassandraJavaUtil.javaFunctions(pointCloudsRegion5)
                 .writerBuilder(
                         "propelld",
                         "pointcloudregions",
