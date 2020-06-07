@@ -17,12 +17,7 @@ public class PclSpark
     public static  void main(String args[])
     {
         SparkCassandra cassandraSpark = new SparkCassandra();
-        //cassandraSpark.BuildDataOutputInCassandra();
-        cassandraSpark.BuildDataOutputOCtreeInCassandra();
-        //cassandraSpark.BuildDataOutputVehingenInCassandra();
-        //cassandraSpark.ProcessKNNNormalizedvh();
-        //cassandraSpark.ProcessKNNNormalized();
-        //cassandraSpark.BuildDataInCassandra();
-        //SparkCassandra.ProcessKNN();
+        //cassandraSpark.BuildDataOutputSpaceSplitNonMortonCassandra();
+        cassandraSpark.BuildDataOutputSpaceSplitCassandra();
     }
 }

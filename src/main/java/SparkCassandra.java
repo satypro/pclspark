@@ -157,10 +157,10 @@ public class SparkCassandra
                             float zo = Float.parseFloat(cord[7]);
                             String regionId = cord[8];
 
-                            pointCloud.setPointid(pointId);
+
                             pointCloud.setMortoncode(mCode);
                             pointCloud.setX(x);
-                            pointCloud.setY(y);
+                            pointCloud.setY(y);pointCloud.setPointid(pointId);
                             pointCloud.setZ(z);
                             pointCloud.setXo(xo);
                             pointCloud.setYo(yo);
@@ -178,6 +178,358 @@ public class SparkCassandra
                         "propelld",
                         "pointcloudnormalizedoctree",
                         mapToRow(PointCloudNormalizedOctree.class)
+                ).saveToCassandra();
+    }
+
+    public static void BuildDataOutputSpaceSplitCassandra()
+    {
+        SparkConf conf = new SparkConf()
+                .set("spark.cassandra.connection.host", "192.168.29.100")
+                .setJars(new String[]
+                        {
+                                "/home/research/Research/pclspark/build/libs/pclspark-1.0-SNAPSHOT.jar",
+                                "/home/research/.gradle/caches/modules-2/files-2.1/com.datastax.spark/spark-cassandra-connector_2.11/2.4.2/c91029d0882509bedd32877e50e6c2e6528b3e8d/spark-cassandra-connector_2.11-2.4.2.jar",
+                                "/home/research/.gradle/caches/modules-2/files-2.1/com.twitter/jsr166e/1.1.0/233098147123ee5ddcd39ffc57ff648be4b7e5b2/jsr166e-1.1.0.jar"
+                        })
+                .setMaster("spark://192.168.29.110:7077")
+                .setAppName("PCL_PROCESSOR_CASSANDRA_SPACE_SPLIT");
+
+        SparkSession spark = SparkSession
+                .builder()
+                .config(conf)
+                .getOrCreate();
+
+        JavaRDD<String> input = spark.sparkContext()
+                .textFile("/home/research/dataset/octree.txt", 3)
+                .toJavaRDD();
+
+        JavaRDD<PointCloudRegions> pointCloudsRegion1 = input
+                .mapPartitions(new FlatMapFunction<Iterator<String>, PointCloudRegions>()
+                {
+                    @Override
+                    public Iterator<PointCloudRegions> call(Iterator<String> stringIterator) throws Exception
+                    {
+                        List<PointCloudRegions> pointClouds = new ArrayList<>();
+                        while (stringIterator.hasNext())
+                        {
+                            String in = stringIterator.next();
+                            String[] cord = in.split(" ");
+                            PointCloudRegions pointCloud = new PointCloudRegions();
+
+                            long x = Long.parseLong(cord[2]);
+                            long delta_x = 2000L;
+                            if (x <= (95093 + delta_x))
+                            {
+                                long pointId = Long.parseLong(cord[0]);;
+                                long morton = Long.parseLong(cord[1]);
+                                long y = Long.parseLong(cord[3]);
+                                long z = Long.parseLong(cord[4]);
+                                float xo = Float.parseFloat(cord[5]);
+                                float yo = Float.parseFloat(cord[6]);
+                                float zo = Float.parseFloat(cord[7]);
+                                int label = Integer.parseInt(cord[9]);
+
+                                pointCloud.setMorton(morton);
+                                pointCloud.setRegionid( 1L);
+                                pointCloud.setPointid(pointId);
+                                pointCloud.setX(x);
+                                pointCloud.setY(y);
+                                pointCloud.setZ(z);
+                                pointCloud.setXo(xo);
+                                pointCloud.setYo(yo);
+                                pointCloud.setZo(zo);
+                                pointCloud.setLabel(label);
+
+                                pointClouds.add(pointCloud);
+                            }
+                        }
+                        return pointClouds.iterator();
+                    }
+                });
+
+        CassandraJavaUtil.javaFunctions(pointCloudsRegion1)
+                .writerBuilder(
+                        "propelld",
+                        "pointcloudregions",
+                        mapToRow(PointCloudRegions.class)
+                ).saveToCassandra();
+
+
+        JavaRDD<PointCloudRegions> pointCloudsRegion2 = input
+                .mapPartitions(new FlatMapFunction<Iterator<String>, PointCloudRegions>()
+                {
+                    @Override
+                    public Iterator<PointCloudRegions> call(Iterator<String> stringIterator) throws Exception
+                    {
+                        List<PointCloudRegions> pointClouds = new ArrayList<>();
+
+                        while (stringIterator.hasNext())
+                        {
+                            String in = stringIterator.next();
+                            String[] cord = in.split(" ");
+                            PointCloudRegions pointCloud = new PointCloudRegions();
+
+                            long x = Long.parseLong(cord[2]);
+                            long delta_x = 2000L;
+                            if (x >= (95903 - delta_x) &&  x <= (103000 + delta_x))
+                            {
+                                long pointId = Long.parseLong(cord[0]);;
+                                long y = Long.parseLong(cord[3]);
+                                long z = Long.parseLong(cord[4]);
+                                float xo = Float.parseFloat(cord[5]);
+                                float yo = Float.parseFloat(cord[6]);
+                                float zo = Float.parseFloat(cord[7]);
+                                long morton = Long.parseLong(cord[1]);
+                                int label = Integer.parseInt(cord[9]);
+
+                                pointCloud.setMorton(morton);
+                                pointCloud.setRegionid( 2L);
+                                pointCloud.setPointid(pointId);
+                                pointCloud.setX(x);
+                                pointCloud.setY(y);
+                                pointCloud.setZ(z);
+                                pointCloud.setXo(xo);
+                                pointCloud.setYo(yo);
+                                pointCloud.setZo(zo);
+                                pointCloud.setLabel(label);
+
+                                pointClouds.add(pointCloud);
+                            }
+                        }
+                        return pointClouds.iterator();
+                    }
+                });
+
+        CassandraJavaUtil.javaFunctions(pointCloudsRegion2)
+                .writerBuilder(
+                        "propelld",
+                        "pointcloudregions",
+                        mapToRow(PointCloudRegions.class)
+                ).saveToCassandra();
+
+        JavaRDD<PointCloudRegions> pointCloudsRegion3 = input
+                .mapPartitions(new FlatMapFunction<Iterator<String>, PointCloudRegions>()
+                {
+                    @Override
+                    public Iterator<PointCloudRegions> call(Iterator<String> stringIterator) throws Exception
+                    {
+                        List<PointCloudRegions> pointClouds = new ArrayList<>();
+
+                        while (stringIterator.hasNext())
+                        {
+                            String in = stringIterator.next();
+                            String[] cord = in.split(" ");
+                            PointCloudRegions pointCloud = new PointCloudRegions();
+
+                            long x = Long.parseLong(cord[2]);
+                            long delta_x = 2000L;
+                            if (x >= (103000 - delta_x) &&  x <= (225276 + delta_x))
+                            {
+                                long pointId = Long.parseLong(cord[0]);;
+                                long y = Long.parseLong(cord[3]);
+                                long z = Long.parseLong(cord[4]);
+                                float xo = Float.parseFloat(cord[5]);
+                                float yo = Float.parseFloat(cord[6]);
+                                float zo = Float.parseFloat(cord[7]);
+                                long morton = Long.parseLong(cord[1]);
+                                int label = Integer.parseInt(cord[9]);
+
+                                pointCloud.setMorton(morton);
+                                pointCloud.setRegionid( 3L);
+                                pointCloud.setPointid(pointId);
+                                pointCloud.setX(x);
+                                pointCloud.setY(y);
+                                pointCloud.setZ(z);
+                                pointCloud.setXo(xo);
+                                pointCloud.setYo(yo);
+                                pointCloud.setZo(zo);
+                                pointCloud.setLabel(label);
+
+                                pointClouds.add(pointCloud);
+                            }
+                        }
+                        return pointClouds.iterator();
+                    }
+                });
+
+        CassandraJavaUtil.javaFunctions(pointCloudsRegion3)
+                .writerBuilder(
+                        "propelld",
+                        "pointcloudregions",
+                        mapToRow(PointCloudRegions.class)
+                ).saveToCassandra();
+    }
+
+    public static void BuildDataOutputSpaceSplitNonMortonCassandra()
+    {
+        SparkConf conf = new SparkConf()
+                .set("spark.cassandra.connection.host", "192.168.29.100")
+                .setJars(new String[]
+                        {
+                                "/home/research/Research/pclspark/build/libs/pclspark-1.0-SNAPSHOT.jar",
+                                "/home/research/.gradle/caches/modules-2/files-2.1/com.datastax.spark/spark-cassandra-connector_2.11/2.4.2/c91029d0882509bedd32877e50e6c2e6528b3e8d/spark-cassandra-connector_2.11-2.4.2.jar",
+                                "/home/research/.gradle/caches/modules-2/files-2.1/com.twitter/jsr166e/1.1.0/233098147123ee5ddcd39ffc57ff648be4b7e5b2/jsr166e-1.1.0.jar"
+                        })
+                .setMaster("spark://192.168.29.110:7077")
+                .setAppName("PCL_PROCESSOR_CASSANDRA_SPACE_SPLIT");
+
+        SparkSession spark = SparkSession
+                .builder()
+                .config(conf)
+                .getOrCreate();
+
+        JavaRDD<String> input = spark.sparkContext()
+                .textFile("/home/research/dataset/octree.txt", 3)
+                .toJavaRDD();
+
+        JavaRDD<PointCloudPartition> pointCloudsRegion1 = input
+                .mapPartitions(new FlatMapFunction<Iterator<String>, PointCloudPartition>()
+                {
+                    @Override
+                    public Iterator<PointCloudPartition> call(Iterator<String> stringIterator) throws Exception
+                    {
+                        List<PointCloudPartition> pointClouds = new ArrayList<>();
+                        Morton64 m = new Morton64(3, 21);
+                        while (stringIterator.hasNext())
+                        {
+                            String in = stringIterator.next();
+                            String[] cord = in.split(" ");
+                            PointCloudPartition pointCloud = new PointCloudPartition();
+
+                            float xn = Float.parseFloat(cord[1]);
+                            float delta_x = 0.03f;
+                            if (xn <= (-0.05005642 + delta_x))
+                            {
+                                long pointId = Long.parseLong(cord[0]);;
+
+                                float yn = Float.parseFloat(cord[2]);
+                                float zn = Float.parseFloat(cord[3]);
+
+                                float x = Float.parseFloat(cord[4]);
+                                float y = Float.parseFloat(cord[5]);
+                                float z = Float.parseFloat(cord[6]);
+
+                                pointCloud.setRegionid(1L);
+                                pointCloud.setPointid(pointId);
+                                pointCloud.setXn(xn);
+                                pointCloud.setYn(yn);
+                                pointCloud.setZn(zn);
+                                pointCloud.setX(x);
+                                pointCloud.setY(y);
+                                pointCloud.setZ(z);
+
+                                pointClouds.add(pointCloud);
+                            }
+                        }
+                        return pointClouds.iterator();
+                    }
+                });
+
+        CassandraJavaUtil.javaFunctions(pointCloudsRegion1)
+                .writerBuilder(
+                        "propelld",
+                        "pointpartitionregions",
+                        mapToRow(PointCloudPartition.class)
+                ).saveToCassandra();
+
+        JavaRDD<PointCloudPartition> pointCloudsRegion2 = input
+                .mapPartitions(new FlatMapFunction<Iterator<String>, PointCloudPartition>()
+                {
+                    @Override
+                    public Iterator<PointCloudPartition> call(Iterator<String> stringIterator) throws Exception
+                    {
+                        List<PointCloudPartition> pointClouds = new ArrayList<>();
+                        Morton64 m = new Morton64(3, 21);
+                        while (stringIterator.hasNext())
+                        {
+                            String in = stringIterator.next();
+                            String[] cord = in.split(" ");
+                            PointCloudPartition pointCloud = new PointCloudPartition();
+
+                            float xn = Float.parseFloat(cord[1]);
+                            float delta_x = 0.03f;
+                            if (xn >= (0 - delta_x) &&  xn <= (0.05005642 + delta_x))
+                            {
+                                long pointId = Long.parseLong(cord[0]);;
+
+                                float yn = Float.parseFloat(cord[2]);
+                                float zn = Float.parseFloat(cord[3]);
+
+                                float x = Float.parseFloat(cord[4]);
+                                float y = Float.parseFloat(cord[5]);
+                                float z = Float.parseFloat(cord[6]);
+
+                                pointCloud.setRegionid(2L);
+                                pointCloud.setPointid(pointId);
+                                pointCloud.setXn(xn);
+                                pointCloud.setYn(yn);
+                                pointCloud.setZn(zn);
+                                pointCloud.setX(x);
+                                pointCloud.setY(y);
+                                pointCloud.setZ(z);
+
+                                pointClouds.add(pointCloud);
+                            }
+                        }
+                        return pointClouds.iterator();
+                    }
+                });
+
+        CassandraJavaUtil.javaFunctions(pointCloudsRegion2)
+                .writerBuilder(
+                        "propelld",
+                        "pointpartitionregions",
+                        mapToRow(PointCloudPartition.class)
+                ).saveToCassandra();
+
+        JavaRDD<PointCloudPartition> pointCloudsRegion3 = input
+                .mapPartitions(new FlatMapFunction<Iterator<String>, PointCloudPartition>()
+                {
+                    @Override
+                    public Iterator<PointCloudPartition> call(Iterator<String> stringIterator) throws Exception
+                    {
+                        List<PointCloudPartition> pointClouds = new ArrayList<>();
+                        Morton64 m = new Morton64(3, 21);
+                        while (stringIterator.hasNext())
+                        {
+                            String in = stringIterator.next();
+                            String[] cord = in.split(" ");
+                            PointCloudPartition pointCloud = new PointCloudPartition();
+
+                            float xn = Float.parseFloat(cord[1]);
+                            float delta_x = 0.03f;
+                            if (xn >= (0.05005642 - delta_x) &&  xn <= (0.9143333 + delta_x))
+                            {
+                                long pointId = Long.parseLong(cord[0]);;
+
+                                float yn = Float.parseFloat(cord[2]);
+                                float zn = Float.parseFloat(cord[3]);
+
+                                float x = Float.parseFloat(cord[4]);
+                                float y = Float.parseFloat(cord[5]);
+                                float z = Float.parseFloat(cord[6]);
+
+                                pointCloud.setRegionid(3L);
+                                pointCloud.setPointid(pointId);
+                                pointCloud.setXn(xn);
+                                pointCloud.setYn(yn);
+                                pointCloud.setZn(zn);
+                                pointCloud.setX(x);
+                                pointCloud.setY(y);
+                                pointCloud.setZ(z);
+
+                                pointClouds.add(pointCloud);
+                            }
+                        }
+                        return pointClouds.iterator();
+                    }
+                });
+
+        CassandraJavaUtil.javaFunctions(pointCloudsRegion3)
+                .writerBuilder(
+                        "propelld",
+                        "pointpartitionregions",
+                        mapToRow(PointCloudPartition.class)
                 ).saveToCassandra();
     }
 
