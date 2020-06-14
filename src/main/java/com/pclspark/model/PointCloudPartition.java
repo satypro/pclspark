@@ -1,3 +1,5 @@
+package com.pclspark.model;
+
 public class PointCloudPartition
 {
     private long regionid;

@@ -1,6 +1,8 @@
+package com.pclspark.model;
+
 import java.io.Serializable;
 
-public class PointCloudRegions implements Serializable
+public class PointCloudRegion implements Serializable
 {
     private long regionid;
     private long pointid;

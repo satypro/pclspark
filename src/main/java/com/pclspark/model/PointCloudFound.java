@@ -1,3 +1,7 @@
+package com.pclspark.model;
+
+import com.pclspark.model.PointCloud;
+
 import java.io.Serializable;
 import java.util.List;
 

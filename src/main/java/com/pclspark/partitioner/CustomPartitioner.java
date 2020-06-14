@@ -1,11 +1,13 @@
+package com.pclspark.partitioner;
+
 import org.apache.spark.Partitioner;
 
-class CustomPartitioner extends Partitioner
+public class CustomPartitioner extends Partitioner
 {
-
     private int numParts;
 
-    public CustomPartitioner(int i) {
+    public CustomPartitioner(int i)
+    {
         numParts=i;
     }
 
@@ -16,15 +18,14 @@ class CustomPartitioner extends Partitioner
     }
 
     @Override
-    public int getPartition(Object key){
-
-        //partition based on the first character of the key...you can have your logic here !!
-        return ((String)key).charAt(0)%numParts;
-
+    public int getPartition(Object key)
+    {
+        return ((Integer)key).intValue();
     }
 
     @Override
-    public boolean equals(Object obj){
+    public boolean equals(Object obj)
+    {
         if(obj instanceof CustomPartitioner)
         {
             CustomPartitioner partitionerObject = (CustomPartitioner)obj;

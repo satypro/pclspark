@@ -1,3 +1,5 @@
+package com.pclspark.morton;
+
 public class Morton2D {
 
     private final int MortonTable256[]

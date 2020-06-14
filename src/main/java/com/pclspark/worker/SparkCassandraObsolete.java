@@ -1,5 +1,9 @@
+package com.pclspark.worker;
+
 import com.datastax.spark.connector.japi.CassandraJavaUtil;
 import com.datastax.spark.connector.japi.rdd.CassandraTableScanJavaRDD;
+import com.pclspark.model.*;
+import com.pclspark.morton.Morton64;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaRDD;
@@ -13,7 +17,7 @@ import java.util.List;
 import static com.datastax.spark.connector.japi.CassandraJavaUtil.mapRowTo;
 import static com.datastax.spark.connector.japi.CassandraJavaUtil.mapToRow;
 
-public class SparkCassandra
+public class SparkCassandraObsolete
 {
     public static void BuildDataInCassandra()
     {
@@ -203,18 +207,18 @@ public class SparkCassandra
                 .textFile("/home/research/dataset/octree.txt", 3)
                 .toJavaRDD();
 
-        JavaRDD<PointCloudRegions> pointCloudsRegion1 = input
-                .mapPartitions(new FlatMapFunction<Iterator<String>, PointCloudRegions>()
+        JavaRDD<PointCloudRegion> pointCloudsRegion1 = input
+                .mapPartitions(new FlatMapFunction<Iterator<String>, PointCloudRegion>()
                 {
                     @Override
-                    public Iterator<PointCloudRegions> call(Iterator<String> stringIterator) throws Exception
+                    public Iterator<PointCloudRegion> call(Iterator<String> stringIterator) throws Exception
                     {
-                        List<PointCloudRegions> pointClouds = new ArrayList<>();
+                        List<PointCloudRegion> pointClouds = new ArrayList<>();
                         while (stringIterator.hasNext())
                         {
                             String in = stringIterator.next();
                             String[] cord = in.split(" ");
-                            PointCloudRegions pointCloud = new PointCloudRegions();
+                            PointCloudRegion pointCloud = new PointCloudRegion();
 
                             long x = Long.parseLong(cord[2]);
                             long delta_x = 1000L;
@@ -260,23 +264,23 @@ public class SparkCassandra
                 .writerBuilder(
                         "propelld",
                         "pointcloudregions",
-                        mapToRow(PointCloudRegions.class)
+                        mapToRow(PointCloudRegion.class)
                 ).saveToCassandra();
 
 
-        JavaRDD<PointCloudRegions> pointCloudsRegion2 = input
-                .mapPartitions(new FlatMapFunction<Iterator<String>, PointCloudRegions>()
+        JavaRDD<PointCloudRegion> pointCloudsRegion2 = input
+                .mapPartitions(new FlatMapFunction<Iterator<String>, PointCloudRegion>()
                 {
                     @Override
-                    public Iterator<PointCloudRegions> call(Iterator<String> stringIterator) throws Exception
+                    public Iterator<PointCloudRegion> call(Iterator<String> stringIterator) throws Exception
                     {
-                        List<PointCloudRegions> pointClouds = new ArrayList<>();
+                        List<PointCloudRegion> pointClouds = new ArrayList<>();
 
                         while (stringIterator.hasNext())
                         {
                             String in = stringIterator.next();
                             String[] cord = in.split(" ");
-                            PointCloudRegions pointCloud = new PointCloudRegions();
+                            PointCloudRegion pointCloud = new PointCloudRegion();
 
                             long x = Long.parseLong(cord[2]);
                             long delta_x = 1000L;
@@ -322,22 +326,22 @@ public class SparkCassandra
                 .writerBuilder(
                         "propelld",
                         "pointcloudregions",
-                        mapToRow(PointCloudRegions.class)
+                        mapToRow(PointCloudRegion.class)
                 ).saveToCassandra();
 
-        JavaRDD<PointCloudRegions> pointCloudsRegion3 = input
-                .mapPartitions(new FlatMapFunction<Iterator<String>, PointCloudRegions>()
+        JavaRDD<PointCloudRegion> pointCloudsRegion3 = input
+                .mapPartitions(new FlatMapFunction<Iterator<String>, PointCloudRegion>()
                 {
                     @Override
-                    public Iterator<PointCloudRegions> call(Iterator<String> stringIterator) throws Exception
+                    public Iterator<PointCloudRegion> call(Iterator<String> stringIterator) throws Exception
                     {
-                        List<PointCloudRegions> pointClouds = new ArrayList<>();
+                        List<PointCloudRegion> pointClouds = new ArrayList<>();
 
                         while (stringIterator.hasNext())
                         {
                             String in = stringIterator.next();
                             String[] cord = in.split(" ");
-                            PointCloudRegions pointCloud = new PointCloudRegions();
+                            PointCloudRegion pointCloud = new PointCloudRegion();
 
                             long x = Long.parseLong(cord[2]);
                             long delta_x = 1000L;
@@ -383,22 +387,22 @@ public class SparkCassandra
                 .writerBuilder(
                         "propelld",
                         "pointcloudregions",
-                        mapToRow(PointCloudRegions.class)
+                        mapToRow(PointCloudRegion.class)
                 ).saveToCassandra();
 
-        JavaRDD<PointCloudRegions> pointCloudsRegion4 = input
-                .mapPartitions(new FlatMapFunction<Iterator<String>, PointCloudRegions>()
+        JavaRDD<PointCloudRegion> pointCloudsRegion4 = input
+                .mapPartitions(new FlatMapFunction<Iterator<String>, PointCloudRegion>()
                 {
                     @Override
-                    public Iterator<PointCloudRegions> call(Iterator<String> stringIterator) throws Exception
+                    public Iterator<PointCloudRegion> call(Iterator<String> stringIterator) throws Exception
                     {
-                        List<PointCloudRegions> pointClouds = new ArrayList<>();
+                        List<PointCloudRegion> pointClouds = new ArrayList<>();
 
                         while (stringIterator.hasNext())
                         {
                             String in = stringIterator.next();
                             String[] cord = in.split(" ");
-                            PointCloudRegions pointCloud = new PointCloudRegions();
+                            PointCloudRegion pointCloud = new PointCloudRegion();
 
                             long x = Long.parseLong(cord[2]);
                             long delta_x = 1000L;
@@ -444,22 +448,22 @@ public class SparkCassandra
                 .writerBuilder(
                         "propelld",
                         "pointcloudregions",
-                        mapToRow(PointCloudRegions.class)
+                        mapToRow(PointCloudRegion.class)
                 ).saveToCassandra();
 
-        JavaRDD<PointCloudRegions> pointCloudsRegion5 = input
-                .mapPartitions(new FlatMapFunction<Iterator<String>, PointCloudRegions>()
+        JavaRDD<PointCloudRegion> pointCloudsRegion5 = input
+                .mapPartitions(new FlatMapFunction<Iterator<String>, PointCloudRegion>()
                 {
                     @Override
-                    public Iterator<PointCloudRegions> call(Iterator<String> stringIterator) throws Exception
+                    public Iterator<PointCloudRegion> call(Iterator<String> stringIterator) throws Exception
                     {
-                        List<PointCloudRegions> pointClouds = new ArrayList<>();
+                        List<PointCloudRegion> pointClouds = new ArrayList<>();
 
                         while (stringIterator.hasNext())
                         {
                             String in = stringIterator.next();
                             String[] cord = in.split(" ");
-                            PointCloudRegions pointCloud = new PointCloudRegions();
+                            PointCloudRegion pointCloud = new PointCloudRegion();
 
                             long x = Long.parseLong(cord[2]);
                             long delta_x = 1000L;
@@ -505,7 +509,7 @@ public class SparkCassandra
                 .writerBuilder(
                         "propelld",
                         "pointcloudregions",
-                        mapToRow(PointCloudRegions.class)
+                        mapToRow(PointCloudRegion.class)
                 ).saveToCassandra();
     }
 
@@ -1220,7 +1224,7 @@ public class SparkCassandra
         List<PointCloud> inputPointCloud = pointCloudRdd.collect();
         PointCloud inputPoint = inputPointCloud.get(5000);
         System.out.println(inputPoint.getPointid());
-        SparkCassandra.KNNSearch(sortedRDD, inputPoint);
+        SparkCassandraObsolete.KNNSearch(sortedRDD, inputPoint);
 
         System.out.println("DONE PROCESSING");
     }
@@ -1294,7 +1298,7 @@ public class SparkCassandra
         inputPoint.setDistance(0);
 
         System.out.println(inputPoint.getPointid());
-        SparkCassandra.KNNSearchNormalized(sortedRDD, inputPoint);
+        SparkCassandraObsolete.KNNSearchNormalized(sortedRDD, inputPoint);
         System.out.println("DONE PROCESSING1");
 
         inputPoint = new PointCloudNormalized();
@@ -1316,7 +1320,7 @@ public class SparkCassandra
         inputPoint.setDistance(0);
 
         System.out.println(inputPoint.getPointid());
-        SparkCassandra.KNNSearchNormalized(sortedRDD, inputPoint);
+        SparkCassandraObsolete.KNNSearchNormalized(sortedRDD, inputPoint);
         System.out.println("DONE PROCESSING2");
     }
 
@@ -1377,7 +1381,7 @@ public class SparkCassandra
         inputPoint.setDistance(0);
 
         System.out.println(inputPoint.getPointid());
-        SparkCassandra.RadiusSearchNormalized(sortedRDD, inputPoint, 10000);
+        SparkCassandraObsolete.RadiusSearchNormalized(sortedRDD, inputPoint, 10000);
         System.out.println("DONE PROCESSING");
     }
 }

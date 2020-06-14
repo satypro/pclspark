@@ -1,3 +1,5 @@
+package com.pclspark.model;
+
 import java.io.Serializable;
 
 public class PointCloudNormalizedOctree implements Serializable

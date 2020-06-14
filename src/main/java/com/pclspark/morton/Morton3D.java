@@ -1,3 +1,5 @@
+package com.pclspark.morton;
+
 import java.io.Serializable;
 
 /**

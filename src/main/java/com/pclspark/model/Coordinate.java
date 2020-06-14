@@ -1,3 +1,7 @@
+package com.pclspark.model;
+
+import com.pclspark.morton.Morton3D;
+
 import java.io.Serializable;
 
 public class Coordinate implements Serializable, Comparable<Coordinate>
