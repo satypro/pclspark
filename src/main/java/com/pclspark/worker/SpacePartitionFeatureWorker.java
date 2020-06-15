@@ -61,14 +61,14 @@ public class SpacePartitionFeatureWorker
                 .select("regionid", "morton", "pointid", "x", "y", "z", "xo", "yo", "zo", "label" );
 
 
-        JavaPairRDD<Integer, List<PointCloudRegion>> pairRDD = pointCloudRegionRdd
-                .mapPartitionsToPair(new PairFlatMapFunction<Iterator<PointCloudRegion>, Integer, List<PointCloudRegion>>()
+        JavaPairRDD<Long, List<PointCloudRegion>> pairRDD = pointCloudRegionRdd
+                .mapPartitionsToPair(new PairFlatMapFunction<Iterator<PointCloudRegion>, Long, List<PointCloudRegion>>()
         {
             @Override
-            public Iterator<Tuple2<Integer, List<PointCloudRegion>>> call(Iterator<PointCloudRegion> pointCloudRegionsIterator) throws Exception
+            public Iterator<Tuple2<Long, List<PointCloudRegion>>> call(Iterator<PointCloudRegion> pointCloudRegionsIterator) throws Exception
             {
-                Map<Integer, List<PointCloudRegion>> poinCloudRegionMap = new HashMap<>();
-                List<Tuple2<Integer, List<PointCloudRegion>>> tuple2s = new ArrayList<>();
+                Map<Long, List<PointCloudRegion>> poinCloudRegionMap = new HashMap<>();
+                List<Tuple2<Long, List<PointCloudRegion>>> tuple2s = new ArrayList<>();
                 try
                 {
                     while (pointCloudRegionsIterator.hasNext())
@@ -85,13 +85,14 @@ public class SpacePartitionFeatureWorker
                         {
                             List<PointCloudRegion> pointCloudRegions = new ArrayList<>();
                             pointCloudRegions.add(pointCloudRegion);
-                            poinCloudRegionMap.put((int) pointCloudRegion.getRegionid(), pointCloudRegions);
+                            poinCloudRegionMap.put(pointCloudRegion.getRegionid(), pointCloudRegions);
                         }
                     }
 
-                    for (Integer key : poinCloudRegionMap.keySet())
+                    for (Long key : poinCloudRegionMap.keySet())
                     {
-                        tuple2s.add(new Tuple2<Integer, List<PointCloudRegion>>(key, poinCloudRegionMap.get(key)));
+                        System.out.println("KEY :" +  key);
+                        tuple2s.add(new Tuple2<Long, List<PointCloudRegion>>(key, poinCloudRegionMap.get(key)));
                     }
                 }
                 catch (Exception ex)
@@ -109,10 +110,10 @@ public class SpacePartitionFeatureWorker
 
         // Then in Each Partition we will apply our search algorithm
         JavaRDD<PointFeature>  pointFeatureJavaRDD = pairRDD
-                .mapPartitions(new FlatMapFunction<Iterator<Tuple2<Integer, List<PointCloudRegion>>>, PointFeature>()
+                .mapPartitions(new FlatMapFunction<Iterator<Tuple2<Long, List<PointCloudRegion>>>, PointFeature>()
         {
             @Override
-            public Iterator<PointFeature> call(Iterator<Tuple2<Integer, List<PointCloudRegion>>> tuple2Iterator) throws Exception
+            public Iterator<PointFeature> call(Iterator<Tuple2<Long, List<PointCloudRegion>>> tuple2Iterator) throws Exception
             {
                 List<PointFeature> pointFeatures = new ArrayList<>();
 

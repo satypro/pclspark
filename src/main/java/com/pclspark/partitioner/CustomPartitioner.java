@@ -20,9 +20,10 @@ public class CustomPartitioner extends Partitioner
     @Override
     public int getPartition(Object key)
     {
-        return ((Integer)key).intValue();
+        return ((Long)key).intValue() % numParts;
     }
 
+    /*
     @Override
     public boolean equals(Object obj)
     {
@@ -35,4 +36,5 @@ public class CustomPartitioner extends Partitioner
 
         return false;
     }
+     */
 }

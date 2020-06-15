@@ -1,6 +1,7 @@
 package com.pclspark;
 
 import com.pclspark.worker.SpacePartitionFeatureWorker;
+import com.pclspark.worker.SpacePartitionWorker;
 
 public class Main
 {
@@ -10,6 +11,7 @@ public class Main
         //cassandraSpark.BuildDataOutputSpaceSplitNonMortonCassandra();
         //cassandraSpark.BuildDataOutputSpaceSplitCassandra();
 
-        SpacePartitionFeatureWorker.Process();
+        SpacePartitionWorker.BuildDataOutputSpaceSplitCassandra();
+        //SpacePartitionFeatureWorker.Process();
     }
 }

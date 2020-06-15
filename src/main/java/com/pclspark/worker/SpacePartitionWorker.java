@@ -182,7 +182,7 @@ public class SpacePartitionWorker
                                 }
 
                                 pointCloud.setMorton(morton);
-                                pointCloud.setRegionid( 4L);
+                                pointCloud.setRegionid( 5L);
                                 pointCloud.setPointid(pointId);
                                 pointCloud.setX(x);
                                 pointCloud.setY(y);
@@ -202,7 +202,7 @@ public class SpacePartitionWorker
         CassandraJavaUtil.javaFunctions(pointCloudsRegions)
                 .writerBuilder(
                         "propelld",
-                        "pointcloudregions",
+                        "pointcloudregionsverify",
                         mapToRow(PointCloudRegion.class)
                 ).saveToCassandra();
     }
