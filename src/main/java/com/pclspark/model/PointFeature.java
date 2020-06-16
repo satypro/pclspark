@@ -4,31 +4,26 @@ import java.io.Serializable;
 
 public class PointFeature implements Serializable
 {
-    private long regionid;
-    private long pointid;
-    private double cl;
-    private double cp;
-    private double cs;
-    private double omnivariance;
-    private double anisotropy;
-    private double eigenentropy;
-    private double changeofcurvature;
+    private float cl;
+    private float cp;
+    private float cs;
+    private float omnivariance;
+    private float anisotropy;
+    private float eigenentropy;
+    private float changeofcurvature;
     private int label;
+    private double [] features;
 
     public PointFeature(
-            long regionId,
-            long pointId,
-            double cl,
-            double cp,
-            double cs,
-            double omnivariance,
-            double anisotropy,
-            double eigenentropy,
-            double changeOfCurvature,
+            float cl,
+            float cp,
+            float cs,
+            float omnivariance,
+            float anisotropy,
+            float eigenentropy,
+            float changeOfCurvature,
             int label)
     {
-        this.setRegionid(regionId);
-        this.setPointid(pointId);
         this.setCp(cp);
         this.setCs(cs);
         this.setCl(cl);
@@ -36,67 +31,85 @@ public class PointFeature implements Serializable
         this.setAnisotropy(anisotropy);
         this.setEigenentropy(eigenentropy);
         this.setChangeofcurvature(changeOfCurvature);
-        this.label = label;
+        this.setLabel(label);
+        this.features = new double[7];
+        features[0] = cl;
+        features[1] = cp;
+        features[2] = cs;
+        features[3] = omnivariance;
+        features[4] = anisotropy;
+        features[5] = eigenentropy;
+        features[6] = changeOfCurvature;
     }
 
-    public double getCl()
+    public float getCl()
     {
         return cl;
     }
 
-    public void setCl(double cl)
+    public void setCl(float cl)
     {
         this.cl = cl;
     }
 
-    public double getCp()
+    public float getCp()
     {
         return cp;
     }
 
-    public void setCp(double cp)
+    public void setCp(float cp)
     {
         this.cp = cp;
     }
 
-    public double getCs()
+    public float getCs()
     {
         return cs;
     }
 
-    public void setCs(double cs)
+    public void setCs(float cs)
     {
         this.cs = cs;
     }
 
-    public double getOmnivariance()
+    public float getOmnivariance()
     {
         return omnivariance;
     }
 
-    public void setOmnivariance(double omnivariance)
+    public void setOmnivariance(float omnivariance)
     {
         this.omnivariance = omnivariance;
     }
 
-    public double getAnisotropy()
+    public float getAnisotropy()
     {
         return anisotropy;
     }
 
-    public void setAnisotropy(double anisotropy)
+    public void setAnisotropy(float anisotropy)
     {
         this.anisotropy = anisotropy;
     }
 
-    public double getEigenentropy()
+    public float getEigenentropy()
     {
         return eigenentropy;
     }
 
-    public void setEigenentropy(double eigenentropy)
+    public void setEigenentropy(float eigenentropy)
     {
         this.eigenentropy = eigenentropy;
+    }
+
+    public float getChangeofcurvature()
+    {
+        return changeofcurvature;
+    }
+
+    public void setChangeofcurvature(float changeofcurvature)
+    {
+        this.changeofcurvature = changeofcurvature;
     }
 
     public int getLabel()
@@ -109,33 +122,13 @@ public class PointFeature implements Serializable
         this.label = label;
     }
 
-    public long getRegionid()
+    public double[] getFeatures()
     {
-        return regionid;
+        return features;
     }
 
-    public void setRegionid(long regionid)
+    public void setFeatures(double[] features)
     {
-        this.regionid = regionid;
-    }
-
-    public long getPointid()
-    {
-        return pointid;
-    }
-
-    public void setPointid(long pointid)
-    {
-        this.pointid = pointid;
-    }
-
-    public double getChangeofcurvature()
-    {
-        return changeofcurvature;
-    }
-
-    public void setChangeofcurvature(double changeofcurvature)
-    {
-        this.changeofcurvature = changeofcurvature;
+        this.features = features;
     }
 }
