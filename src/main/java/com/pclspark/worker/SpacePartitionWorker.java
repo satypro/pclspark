@@ -59,6 +59,9 @@ public class SpacePartitionWorker
                             float zo = Float.parseFloat(cord[7]);
                             int label = Integer.parseInt(cord[9]);
 
+                            if (label == 0)
+                                continue;
+
                             long delta_x = 1000L;
 
                             if (x <= (95000 + delta_x))
@@ -202,7 +205,7 @@ public class SpacePartitionWorker
         CassandraJavaUtil.javaFunctions(pointCloudsRegions)
                 .writerBuilder(
                         "propelld",
-                        "pointcloudregionsverify",
+                        "pointcloudregionsver",
                         mapToRow(PointCloudRegion.class)
                 ).saveToCassandra();
     }

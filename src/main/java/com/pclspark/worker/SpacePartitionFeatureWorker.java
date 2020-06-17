@@ -237,19 +237,6 @@ public class SpacePartitionFeatureWorker
                                 + eigenValues[2]*Math.log(eigenValues[2]));
                         double changeOfCurvature = eigenValues[2]/(eigenValues[0] + eigenValues[1] + eigenValues[2]);
 
-                        // lets build Feature and then return the feature
-                        pointFeatures.add(new PointFeature(
-                                pointCloudRegion.getRegionid(),
-                                pointCloudRegion.getPointid(),
-                                cl,
-                                cp,
-                                cs,
-                                omnivariance,
-                                anisotropy,
-                                eigenentropy,
-                                changeOfCurvature,
-                                pointCloudRegion.getLabel()
-                        ));
                     }
                 }
 

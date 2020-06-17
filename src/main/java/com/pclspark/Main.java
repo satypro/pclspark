@@ -2,6 +2,7 @@ package com.pclspark;
 
 import com.pclspark.worker.SpacePartitionFeatureWorker;
 import com.pclspark.worker.SpacePartitionWorker;
+import com.pclspark.worker.SparkClassifier;
 
 public class Main
 {
@@ -11,7 +12,8 @@ public class Main
         //cassandraSpark.BuildDataOutputSpaceSplitNonMortonCassandra();
         //cassandraSpark.BuildDataOutputSpaceSplitCassandra();
 
-        SpacePartitionWorker.BuildDataOutputSpaceSplitCassandra();
+        //SpacePartitionWorker.BuildDataOutputSpaceSplitCassandra();
         //SpacePartitionFeatureWorker.Process();
+        SparkClassifier.randomForestClassifier();
     }
 }
